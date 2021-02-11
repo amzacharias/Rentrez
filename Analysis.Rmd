@@ -1,0 +1,113 @@
+---
+title: "Analysis"
+author: "Amanda Zacharias"
+date: "2/9/2021"
+output: html_document
+---
+
+#Project Info
+
+**Date**: February 9th, 2021
+**GitHub Repository Link**: https://github.com/ForgetfulCow/Rentrez
+**Username**: ForgetfulCow
+
+# Load package
+
+```{r}
+library(knitr)
+library(dplyr)
+```
+
+
+# Load the Sequences.csv file
+
+```{r}
+SeqData <- read.csv("Sequences1.csv")
+head(SeqData)
+```
+
+# Count the number of each base pair (A,T,C,G), in each of the three sequences. 
+
+## Don't include any characters from the header, use the nucleotide sequence only; you MIGHT use `gsub()`, `nchar()`, for loops, if/then statements
+
+The first couple of lines of code generate empty vectors for each count of nucleotide type counts. length = num_sequences to account for variuos numbers of sequences in a dataframe (i.e. makes the code more generalizable).
+
+\n
+
+The `for` loop is used to extract each sequence from the SeqData dataset and count the number of occurences of each nucleotide type. The loop iterates through each sequence.`gsub` removes every character in the sequence except the target. `nchar` sums the number of characters left. These number is stored in its respective vector of counts. 
+
+```{r}
+# Generate vectors for each nucleotide type count
+num_sequences <- length(SeqData$Sequence)
+ACount <- vector(mode = "numeric", length = num_sequences)
+TCount <- vector(mode = "numeric", length = num_sequences)
+CCount <- vector(mode = "numeric", length = num_sequences)
+GCount <- vector(mode = "numeric", length = num_sequences)
+
+for (i in 1:length(SeqData$Sequence)){ # For every sequence
+  ACount[i] <- nchar(gsub("[^A]","",SeqData$Sequence[i])) 
+  TCount[i] <- nchar(gsub("[^T]","",SeqData$Sequence[i]))
+  CCount[i] <- nchar(gsub("[^C]","",SeqData$Sequence[i]))
+  GCount[i] <- nchar(gsub("[^G]","",SeqData$Sequence[i]))
+} # End of loop
+```
+
+# Print out each sequence
+
+```{r}
+print(SeqData$Sequence)
+```
+
+# Print out the number of each nucleotide as a table for each of the three sequences
+
+The first line creates an empty vector that is the length of the number of sequences in the dataset. 
+
+\n
+
+A `for` loop is used to extract the Sequence ID from the name of each sequence in the dataset. Assumes the first character in the name is a `>` and the ID is 10 characters long. `substr()` function is used to do this extraction. I found this function [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/substr.html).
+
+\n
+
+The next line creates a dataframe which each vector of ID's and vectors of counts.
+
+\n
+
+`kable()` is used to make a pretty table
+
+```{r}
+Seq_ID <- vector(length = num_sequences)
+
+for (i in 1:length(SeqData$Sequence)){ # For every sequence
+  Seq_ID[i] <- substr(SeqData$Name[i], 2, 11) # Extract the ID 
+} # End loop
+
+BPCount <- data.frame(Seq_ID, ACount, TCount, CCount, GCount)
+kable(BPCount, col.names = c("Sequence ID", "A Count", "T Count",
+                             "C Count", "G Count"), align = "c")
+```
+
+# Include an image of a bacteria from the internet, and a link to the Wikipedia page about Borrelia burgdorferi
+
+![](https://thenativeantigencompany.com/wp-content/uploads/2019/05/shutterstock_451652947.jpg){width=50%}
+
+\n
+
+[Wikipedia page](https://en.wikipedia.org/wiki/Borrelia_burgdorferi#:~:text=Borrelia%20burgdorferi%20is%20a%20bacterial,known%20to%20cause%20the%20disease)
+
+# Calculate the GC Content (% of nucleotides that are G or C and create a final table showing GC content for each sequence ID.
+
+`transmute()` is used to create a new column that is the % GC Content in each sequence. This function keeps the Seq_ID variable. `round()` is used in the function to limit the number of decimals to 2. 
+
+```{r}
+GC_Data <- transmute(BPCount,Seq_ID, 
+                     GC_Content = round(((CCount + GCount)/
+                       (ACount + TCount + CCount + GCount))*100, 
+                       digits = 2))
+kable(GC_Data, col.names = c("Sequence ID", "% GC Content"), align = "c")
+```
+
+
+
+
+
+
