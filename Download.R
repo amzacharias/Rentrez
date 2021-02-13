@@ -8,9 +8,9 @@
 # write the data to a new .csv file.
 
 # Copy and pasted lines from assignment instructions
-# Line 14 concatenates 3 unique NCBI identifiers and stores them in a vector called "ncbi_ids"
-# Line 15 loads the "rentrez" package
-# Line 16 calls the "enztrez_fetch()" function from the rentrez package. This function 
+# Line 17 concatenates 3 unique NCBI identifiers and stores them in a vector called "ncbi_ids"
+# Line 18 loads the "rentrez" package
+# Line 19 calls the "enztrez_fetch()" function from the rentrez package. This function 
 #   will use the supplied ID character vector to download or "fetch" data from NCBI databases. 
 #   the rettype parameter specifies that the data should have FASTA formatting.
 
