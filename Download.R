@@ -42,5 +42,5 @@ Sequences1<-data.frame(Name=header1,Sequence=seq1)
 
 # Output the Sequences1 data.frame to a file called Sequences.csv
 # Include row.names=FALSE to prevent row index from being written to the file.
-write.csv(Sequences1, "Sequences1.csv",row.names=FALSE)
+write.csv(Sequences1, "Sequences.csv",row.names=FALSE)
 
